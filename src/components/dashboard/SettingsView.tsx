@@ -9,7 +9,7 @@ export function SettingsView() {
           A operação está rodando em modo mock. Conecte a WhatsApp Cloud API (Meta)
           para começar a receber e enviar mensagens reais.
         </p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Phone Number ID" placeholder="ex: 105954172352xxx" />
           <Field label="WhatsApp Business Account ID" placeholder="ex: 108764729xxx" />
           <Field label="Access Token" placeholder="EAAG..." type="password" />
