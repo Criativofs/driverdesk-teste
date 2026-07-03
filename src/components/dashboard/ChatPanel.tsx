@@ -76,8 +76,22 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
             Conversas
           </h3>
         </div>
+        <div className="px-3 py-2 border-b border-hairline flex gap-1 overflow-x-auto">
+          <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
+            Todas
+          </FilterChip>
+          {LABELS.map((l) => (
+            <FilterChip
+              key={l.id}
+              active={filter === l.id}
+              onClick={() => setFilter(l.id)}
+            >
+              {l.name}
+            </FilterChip>
+          ))}
+        </div>
         <div className="flex-1 overflow-y-auto divide-y divide-hairline">
-          {drivers.map((d) => (
+          {filteredDrivers.map((d) => (
             <ConversationRow
               key={d.id}
               driver={d}
@@ -89,6 +103,11 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
               }}
             />
           ))}
+          {filteredDrivers.length === 0 && (
+            <div className="px-4 py-8 text-center text-xs text-muted-foreground">
+              Nenhuma conversa com esta etiqueta
+            </div>
+          )}
         </div>
       </div>
 
