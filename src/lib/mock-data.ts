@@ -263,3 +263,193 @@ export function priorityMeta(p: Priority) {
   if (p === "high") return { label: "Alta", dot: "bg-ember", ring: "ring-ember/40", chip: "bg-ember/15 text-ember" };
   return { label: "Normal", dot: "bg-muted-foreground/40", ring: "ring-transparent", chip: "bg-muted text-muted-foreground" };
 }
+
+// ============================================================================
+// Corridas ("Uber Particular")
+// ============================================================================
+
+export type OpStatus =
+  | "disponivel"
+  | "indo_buscar"
+  | "cliente_embarcado"
+  | "finalizando"
+  | "pausa"
+  | "offline";
+
+export function opStatusMeta(s: OpStatus) {
+  switch (s) {
+    case "disponivel":
+      return { label: "Disponível", emoji: "🟢", chip: "bg-success/15 text-success", dot: "bg-success" };
+    case "indo_buscar":
+      return { label: "Indo buscar", emoji: "🚗", chip: "bg-navy/15 text-navy", dot: "bg-navy" };
+    case "cliente_embarcado":
+      return { label: "Cliente embarcado", emoji: "👤", chip: "bg-ember/15 text-ember", dot: "bg-ember" };
+    case "finalizando":
+      return { label: "Finalizando", emoji: "🏁", chip: "bg-warning/20 text-warning", dot: "bg-warning" };
+    case "pausa":
+      return { label: "Em pausa", emoji: "☕", chip: "bg-muted text-muted-foreground", dot: "bg-muted-foreground/60" };
+    case "offline":
+      return { label: "Offline", emoji: "🔴", chip: "bg-muted text-muted-foreground", dot: "bg-muted-foreground/40" };
+  }
+}
+
+// Mapa inicial: status de mensagem → status operacional
+export const initialOpStatus: Record<string, OpStatus> = {
+  d1: "cliente_embarcado",
+  d2: "pausa",
+  d3: "indo_buscar",
+  d4: "disponivel",
+  d5: "offline",
+};
+
+export interface Client {
+  id: string;
+  name: string;
+  phone: string;
+  favorites: string[];
+  ridesTotal: number;
+  lastRide: string;
+  rating: number;
+  favoriteDriverId?: string;
+  notes?: string;
+}
+
+export const clients: Client[] = [
+  {
+    id: "c1",
+    name: "João Almeida",
+    phone: "+55 (11) 99111-2020",
+    favorites: ["Aeroporto GRU", "Av. Paulista, 900"],
+    ridesTotal: 15,
+    lastRide: "hoje 09:14",
+    rating: 4.9,
+    favoriteDriverId: "d1",
+    notes: "Prefere carro grande",
+  },
+  {
+    id: "c2",
+    name: "Maria Santos",
+    phone: "+55 (11) 98422-3311",
+    favorites: ["Shopping Ibirapuera", "Hosp. Sírio-Libanês"],
+    ridesTotal: 22,
+    lastRide: "ontem 18:40",
+    rating: 5.0,
+    favoriteDriverId: "d3",
+  },
+  {
+    id: "c3",
+    name: "Carlos Nogueira",
+    phone: "+55 (11) 97788-1102",
+    favorites: ["Rodoviária Tietê"],
+    ridesTotal: 4,
+    lastRide: "3 dias",
+    rating: 4.6,
+  },
+  {
+    id: "c4",
+    name: "Beatriz Lima",
+    phone: "+55 (11) 96500-8844",
+    favorites: ["Casa", "Trabalho — Faria Lima"],
+    ridesTotal: 38,
+    lastRide: "hoje 07:52",
+    rating: 4.8,
+    favoriteDriverId: "d4",
+  },
+];
+
+export type RideStatus =
+  | "procurando"
+  | "aceita"
+  | "indo_buscar"
+  | "cliente_embarcado"
+  | "em_andamento"
+  | "finalizando"
+  | "concluida"
+  | "cancelada";
+
+export function rideStatusMeta(s: RideStatus) {
+  switch (s) {
+    case "procurando":
+      return { label: "Procurando motorista", chip: "bg-warning/20 text-warning" };
+    case "aceita":
+      return { label: "Aceita", chip: "bg-navy/15 text-navy" };
+    case "indo_buscar":
+      return { label: "Indo buscar", chip: "bg-navy/15 text-navy" };
+    case "cliente_embarcado":
+      return { label: "Cliente embarcado", chip: "bg-ember/15 text-ember" };
+    case "em_andamento":
+      return { label: "Em andamento", chip: "bg-ember/15 text-ember" };
+    case "finalizando":
+      return { label: "Finalizando", chip: "bg-warning/20 text-warning" };
+    case "concluida":
+      return { label: "Concluída", chip: "bg-success/15 text-success" };
+    case "cancelada":
+      return { label: "Cancelada", chip: "bg-destructive/15 text-destructive" };
+  }
+}
+
+export interface Ride {
+  id: string;
+  clientId: string;
+  driverId?: string;
+  origin: string;
+  destination: string;
+  price: number;
+  status: RideStatus;
+  createdAt: string; // HH:MM
+  scheduledFor?: string; // e.g. "Amanhã 05:00"
+  notes?: string;
+}
+
+export const initialRides: Ride[] = [
+  {
+    id: "r1",
+    clientId: "c1",
+    driverId: "d1",
+    origin: "Aeroporto GRU T3",
+    destination: "Av. Paulista, 900",
+    price: 68,
+    status: "cliente_embarcado",
+    createdAt: "09:12",
+  },
+  {
+    id: "r2",
+    clientId: "c2",
+    driverId: "d3",
+    origin: "Shopping Ibirapuera",
+    destination: "Hosp. Sírio-Libanês",
+    price: 42,
+    status: "aceita",
+    createdAt: "13:48",
+  },
+  {
+    id: "r3",
+    clientId: "c3",
+    origin: "Rodoviária Tietê",
+    destination: "Bairro Vila Mariana",
+    price: 35,
+    status: "procurando",
+    createdAt: "14:02",
+  },
+  {
+    id: "r4",
+    clientId: "c4",
+    driverId: "d4",
+    origin: "Casa — Perdizes",
+    destination: "Trabalho — Faria Lima",
+    price: 29,
+    status: "concluida",
+    createdAt: "07:52",
+  },
+  {
+    id: "r5",
+    clientId: "c2",
+    origin: "Casa",
+    destination: "Aeroporto GRU",
+    price: 85,
+    status: "aceita",
+    createdAt: "—",
+    scheduledFor: "Amanhã 05:00",
+  },
+];
+
