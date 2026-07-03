@@ -1,5 +1,5 @@
 import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard } from "lucide-react";
-import { kpiToday, drivers, statusColor, APP_NAME, APP_TAGLINE } from "@/lib/mock-data";
+import { kpiToday, drivers, statusColor, APP_TAGLINE } from "@/lib/mock-data";
 
 export type Section = "overview" | "inbox" | "drivers" | "analytics" | "reports" | "settings";
 
