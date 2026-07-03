@@ -52,7 +52,7 @@ const titles: Record<Section, { title: string; subtitle: string }> = {
 
 
 function Dashboard() {
-  const [section, setSection] = useState<Section>("overview");
+  const [section, setSection] = useState<Section>("rides");
   const [navOpen, setNavOpen] = useState(false);
   const [inboxFocusDriver, setInboxFocusDriver] = useState<string | undefined>(undefined);
   const t = titles[section];
@@ -63,51 +63,56 @@ function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
-      {navOpen && (
+    <RidesProvider>
+      <div className="flex h-screen bg-background text-foreground overflow-hidden">
+        {navOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+            onClick={() => setNavOpen(false)}
+          />
+        )}
         <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-          onClick={() => setNavOpen(false)}
-        />
-      )}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 transition-transform lg:static lg:translate-x-0 ${
-          navOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:flex`}
-      >
-        <Sidebar
-          active={section}
-          onChange={(s) => {
-            setSection(s);
-            setNavOpen(false);
-          }}
-        />
-      </div>
+          className={`fixed inset-y-0 left-0 z-50 transition-transform lg:static lg:translate-x-0 ${
+            navOpen ? "translate-x-0" : "-translate-x-full"
+          } lg:flex`}
+        >
+          <Sidebar
+            active={section}
+            onChange={(s) => {
+              setSection(s);
+              setNavOpen(false);
+            }}
+          />
+        </div>
 
-      <main className="flex-1 flex flex-col min-w-0">
-        <TopBar onMenuClick={() => setNavOpen(true)} onOpenDriver={openInbox} />
-        <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-5 border-b border-hairline bg-panel flex items-center gap-3">
-          <button
-            onClick={() => setNavOpen(true)}
-            className="lg:hidden p-2 -ml-2 rounded hover:bg-muted"
-            aria-label="Abrir menu"
-          >
-            <Menu className="size-5" />
-          </button>
-          <div className="min-w-0">
-            <h2 className="text-lg lg:text-xl font-bold tracking-tight truncate">{t.title}</h2>
-            <p className="text-xs text-muted-foreground mt-1 truncate">{t.subtitle}</p>
+        <main className="flex-1 flex flex-col min-w-0">
+          <TopBar onMenuClick={() => setNavOpen(true)} onOpenDriver={openInbox} />
+          <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-5 border-b border-hairline bg-panel flex items-center gap-3">
+            <button
+              onClick={() => setNavOpen(true)}
+              className="lg:hidden p-2 -ml-2 rounded hover:bg-muted"
+              aria-label="Abrir menu"
+            >
+              <Menu className="size-5" />
+            </button>
+            <div className="min-w-0">
+              <h2 className="text-lg lg:text-xl font-bold tracking-tight truncate">{t.title}</h2>
+              <p className="text-xs text-muted-foreground mt-1 truncate">{t.subtitle}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
-          {section === "overview" && <OverviewDashboard onOpenInbox={openInbox} />}
-          {section === "inbox" && <ChatPanel focusDriverId={inboxFocusDriver} />}
-          {section === "drivers" && <DriversView />}
-          {section === "analytics" && <Analytics />}
-          {section === "reports" && <ReportsView />}
-          {section === "settings" && <SettingsView />}
-        </div>
-      </main>
-    </div>
+          <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
+            {section === "rides" && <RidesView />}
+            {section === "overview" && <OverviewDashboard onOpenInbox={openInbox} />}
+            {section === "inbox" && <ChatPanel focusDriverId={inboxFocusDriver} />}
+            {section === "clients" && <ClientsView />}
+            {section === "drivers" && <DriversView onOpenInbox={openInbox} />}
+            {section === "analytics" && <Analytics />}
+            {section === "reports" && <ReportsView />}
+            {section === "settings" && <SettingsView />}
+          </div>
+        </main>
+      </div>
+    </RidesProvider>
   );
 }
+
