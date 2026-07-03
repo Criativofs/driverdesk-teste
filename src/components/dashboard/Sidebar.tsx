@@ -21,7 +21,7 @@ export function Sidebar({
   const activeCount = drivers.filter((d) => d.status !== "offline").length;
 
   return (
-    <aside className="w-72 shrink-0 bg-panel border-r border-hairline flex flex-col">
+    <aside className="w-72 h-full shrink-0 bg-panel border-r border-hairline flex flex-col">
       <div className="p-6 border-b border-hairline">
         <div className="flex items-center gap-2.5">
           <div className="size-9 bg-navy rounded flex items-center justify-center relative">
