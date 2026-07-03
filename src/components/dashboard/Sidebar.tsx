@@ -1,16 +1,19 @@
-import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard } from "lucide-react";
+import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard, Car, UserRound } from "lucide-react";
 import { kpiToday, drivers, statusColor, APP_TAGLINE } from "@/lib/mock-data";
 
-export type Section = "overview" | "inbox" | "drivers" | "analytics" | "reports" | "settings";
+export type Section = "overview" | "rides" | "inbox" | "drivers" | "clients" | "analytics" | "reports" | "settings";
 
 const nav: { id: Section; label: string; icon: typeof MessageSquare }[] = [
+  { id: "rides", label: "Corridas", icon: Car },
   { id: "overview", label: "Painel", icon: LayoutDashboard },
   { id: "inbox", label: "Inbox", icon: MessageSquare },
+  { id: "clients", label: "Clientes", icon: UserRound },
   { id: "drivers", label: "Motoristas", icon: Users },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "reports", label: "Relatórios", icon: FileText },
   { id: "settings", label: "Configurações", icon: Settings },
 ];
+
 
 export function Sidebar({
   active,
