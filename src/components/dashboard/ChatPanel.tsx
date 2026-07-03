@@ -240,7 +240,11 @@ function ConversationRow({
     >
       {active && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-ember" />}
       <div className="flex items-start gap-3">
-        <div className="size-9 rounded-full bg-muted flex items-center justify-center text-[11px] font-bold shrink-0 relative">
+        <span
+          className={`size-1.5 rounded-full mt-3 shrink-0 ${priorityMeta(driver.priority).dot}`}
+          title={`Prioridade ${priorityMeta(driver.priority).label}`}
+        />
+        <div className={`size-9 rounded-full bg-muted flex items-center justify-center text-[11px] font-bold shrink-0 relative ring-2 ${priorityMeta(driver.priority).ring}`}>
           {driver.initials}
           <span
             className={`absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-panel ${statusColor(
@@ -259,6 +263,21 @@ function ConversationRow({
             {last?.direction === "out" ? "Você: " : ""}
             {last?.text ?? "Sem mensagens"}
           </p>
+          {driver.labels.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {driver.labels.slice(0, 3).map((l) => {
+                const def = labelById(l);
+                return (
+                  <span
+                    key={l}
+                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${def.color} ${def.text}`}
+                  >
+                    {def.name}
+                  </span>
+                );
+              })}
+            </div>
+          )}
         </div>
         {driver.unread > 0 && (
           <span className="size-4 bg-ember text-ember-foreground text-[10px] font-bold rounded-full flex items-center justify-center shrink-0 self-center">
@@ -266,6 +285,29 @@ function ConversationRow({
           </span>
         )}
       </div>
+    </button>
+  );
+}
+
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full border transition-colors ${
+        active
+          ? "bg-navy text-navy-foreground border-navy"
+          : "bg-transparent text-muted-foreground border-hairline hover:text-foreground hover:border-foreground/30"
+      }`}
+    >
+      {children}
     </button>
   );
 }
