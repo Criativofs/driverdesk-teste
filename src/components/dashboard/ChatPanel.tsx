@@ -1,17 +1,40 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Info, Paperclip, Send, Smile, X } from "lucide-react";
-import { drivers, messagesByDriver, statusColor, statusLabel, type Driver, type Message } from "@/lib/mock-data";
+import {
+  drivers,
+  messagesByDriver,
+  statusColor,
+  statusLabel,
+  LABELS,
+  labelById,
+  priorityMeta,
+  type Driver,
+  type Message,
+  type LabelId,
+} from "@/lib/mock-data";
 
-export function ChatPanel() {
-  const [selectedId, setSelectedId] = useState<string>(drivers[0].id);
+export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
+  const [selectedId, setSelectedId] = useState<string>(focusDriverId ?? drivers[0].id);
   const [threads, setThreads] = useState<Record<string, Message[]>>(() => ({
     ...messagesByDriver,
   }));
   const [draft, setDraft] = useState("");
-  // Mobile view state: "list" or "chat"
-  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [mobileView, setMobileView] = useState<"list" | "chat">(focusDriverId ? "chat" : "list");
   const [contextOpen, setContextOpen] = useState(false);
+  const [filter, setFilter] = useState<LabelId | "all">("all");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (focusDriverId) {
+      setSelectedId(focusDriverId);
+      setMobileView("chat");
+    }
+  }, [focusDriverId]);
+
+  const filteredDrivers = useMemo(
+    () => (filter === "all" ? drivers : drivers.filter((d) => d.labels.includes(filter))),
+    [filter],
+  );
 
   const selected = drivers.find((d) => d.id === selectedId)!;
   const messages = threads[selectedId] ?? [];
