@@ -13,21 +13,22 @@ import { Analytics } from "@/components/dashboard/Analytics";
 import { DriversView } from "@/components/dashboard/DriversView";
 import { ReportsView } from "@/components/dashboard/ReportsView";
 import { SettingsView } from "@/components/dashboard/SettingsView";
+import { OverviewDashboard } from "@/components/dashboard/OverviewDashboard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LogiFlow Hub — Central de despacho WhatsApp" },
+      { title: "DriverDesk — Central de despacho WhatsApp" },
       {
         name: "description",
         content:
-          "Dashboard operacional para gerenciar conversas de WhatsApp entre um número central de controle e até cinco motoristas, com métricas em tempo real.",
+          "Dashboard operacional em tempo real para gerenciar conversas de WhatsApp entre a central e até cinco motoristas, com prioridades, etiquetas e alertas.",
       },
-      { property: "og:title", content: "LogiFlow Hub — Central de despacho WhatsApp" },
+      { property: "og:title", content: "DriverDesk — Central de despacho WhatsApp" },
       {
         property: "og:description",
         content:
-          "Inbox unificada, respostas do número central e analytics de operação em um só painel.",
+          "Painel operacional ao vivo, inbox unificada com prioridades e etiquetas, e notificações da frota.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/")({
 });
 
 const titles: Record<Section, { title: string; subtitle: string }> = {
+  overview: { title: "Painel operacional", subtitle: "Frota, filas e alertas em tempo real" },
   inbox: { title: "Inbox unificada", subtitle: "5 conversas em tempo real com os motoristas" },
   drivers: { title: "Motoristas", subtitle: "Cadastro e status da frota conectada" },
   analytics: { title: "Analytics", subtitle: "Volume, tempo de resposta e horários de pico" },
@@ -44,13 +46,18 @@ const titles: Record<Section, { title: string; subtitle: string }> = {
 };
 
 function Dashboard() {
-  const [section, setSection] = useState<Section>("inbox");
+  const [section, setSection] = useState<Section>("overview");
   const [navOpen, setNavOpen] = useState(false);
+  const [inboxFocusDriver, setInboxFocusDriver] = useState<string | undefined>(undefined);
   const t = titles[section];
+
+  function openInbox(driverId?: string) {
+    setInboxFocusDriver(driverId);
+    setSection("inbox");
+  }
 
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
-      {/* Mobile drawer overlay */}
       {navOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40 lg:hidden"
@@ -72,7 +79,7 @@ function Dashboard() {
       </div>
 
       <main className="flex-1 flex flex-col min-w-0">
-        <TopBar onMenuClick={() => setNavOpen(true)} />
+        <TopBar onMenuClick={() => setNavOpen(true)} onOpenDriver={openInbox} />
         <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-5 border-b border-hairline bg-panel flex items-center gap-3">
           <button
             onClick={() => setNavOpen(true)}
@@ -87,7 +94,8 @@ function Dashboard() {
           </div>
         </div>
         <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
-          {section === "inbox" && <ChatPanel />}
+          {section === "overview" && <OverviewDashboard onOpenInbox={openInbox} />}
+          {section === "inbox" && <ChatPanel focusDriverId={inboxFocusDriver} />}
           {section === "drivers" && <DriversView />}
           {section === "analytics" && <Analytics />}
           {section === "reports" && <ReportsView />}

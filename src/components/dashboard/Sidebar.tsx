@@ -1,9 +1,10 @@
-import { Truck, MessageSquare, BarChart3, FileText, Users, Settings } from "lucide-react";
-import { kpiToday, drivers, statusColor } from "@/lib/mock-data";
+import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard } from "lucide-react";
+import { kpiToday, drivers, statusColor, APP_TAGLINE } from "@/lib/mock-data";
 
-export type Section = "inbox" | "drivers" | "analytics" | "reports" | "settings";
+export type Section = "overview" | "inbox" | "drivers" | "analytics" | "reports" | "settings";
 
 const nav: { id: Section; label: string; icon: typeof MessageSquare }[] = [
+  { id: "overview", label: "Painel", icon: LayoutDashboard },
   { id: "inbox", label: "Inbox", icon: MessageSquare },
   { id: "drivers", label: "Motoristas", icon: Users },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -29,11 +30,11 @@ export function Sidebar({
             <span className="absolute -top-0.5 -right-0.5 size-2 bg-ember rounded-full ring-2 ring-panel" />
           </div>
           <div>
-            <h1 className="font-bold text-[15px] tracking-tight leading-none">
-              LOGIFLOW <span className="text-ember">HUB</span>
+            <h1 className="font-bold text-[15px] tracking-tight leading-none uppercase">
+              Driver<span className="text-ember">Desk</span>
             </h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
-              Dispatch v1.0
+              {APP_TAGLINE}
             </p>
           </div>
         </div>

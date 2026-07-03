@@ -1,4 +1,39 @@
 export type DriverStatus = "online" | "idle" | "offline";
+export type Priority = "critical" | "high" | "normal";
+
+export type LabelId =
+  | "frete"
+  | "aguardando"
+  | "em-viagem"
+  | "descarga"
+  | "parado"
+  | "problema-mecanico"
+  | "nota-fiscal"
+  | "pedagio"
+  | "combustivel";
+
+export interface LabelDef {
+  id: LabelId;
+  name: string;
+  color: string; // tailwind bg class
+  text: string; // tailwind text class
+}
+
+export const LABELS: LabelDef[] = [
+  { id: "frete", name: "Frete", color: "bg-navy/15", text: "text-navy" },
+  { id: "aguardando", name: "Aguardando", color: "bg-warning/20", text: "text-warning" },
+  { id: "em-viagem", name: "Em viagem", color: "bg-success/20", text: "text-success" },
+  { id: "descarga", name: "Descarga", color: "bg-navy/15", text: "text-navy" },
+  { id: "parado", name: "Parado", color: "bg-muted", text: "text-muted-foreground" },
+  { id: "problema-mecanico", name: "Problema mecânico", color: "bg-destructive/15", text: "text-destructive" },
+  { id: "nota-fiscal", name: "Nota Fiscal", color: "bg-ember/15", text: "text-ember" },
+  { id: "pedagio", name: "Pedágio", color: "bg-muted", text: "text-foreground" },
+  { id: "combustivel", name: "Combustível", color: "bg-ember/15", text: "text-ember" },
+];
+
+export function labelById(id: LabelId): LabelDef {
+  return LABELS.find((l) => l.id === id)!;
+}
 
 export interface Driver {
   id: string;
@@ -15,6 +50,9 @@ export interface Driver {
   activity7d: number[];
   deliveriesDone: number;
   deliveriesTotal: number;
+  priority: Priority;
+  labels: LabelId[];
+  minutesSinceReply: number;
 }
 
 export interface Message {
@@ -22,11 +60,13 @@ export interface Message {
   driverId: string;
   direction: "in" | "out";
   text: string;
-  time: string; // HH:mm
+  time: string;
   status?: "sent" | "delivered" | "read";
   kind?: "text" | "audio" | "image";
 }
 
+export const APP_NAME = "DriverDesk";
+export const APP_TAGLINE = "Dispatch v1.0";
 export const CENTRAL_NUMBER = "+55 (11) 99876-5432";
 export const CENTRAL_LABEL = "Central de Controle";
 
@@ -46,6 +86,9 @@ export const drivers: Driver[] = [
     activity7d: [12, 24, 18, 36, 28, 30, 42],
     deliveriesDone: 8,
     deliveriesTotal: 12,
+    priority: "high",
+    labels: ["em-viagem", "nota-fiscal"],
+    minutesSinceReply: 2,
   },
   {
     id: "d2",
@@ -62,6 +105,9 @@ export const drivers: Driver[] = [
     activity7d: [8, 14, 22, 19, 24, 20, 27],
     deliveriesDone: 5,
     deliveriesTotal: 9,
+    priority: "critical",
+    labels: ["parado", "problema-mecanico"],
+    minutesSinceReply: 15,
   },
   {
     id: "d3",
@@ -78,6 +124,9 @@ export const drivers: Driver[] = [
     activity7d: [18, 22, 26, 20, 34, 28, 31],
     deliveriesDone: 6,
     deliveriesTotal: 10,
+    priority: "normal",
+    labels: ["descarga"],
+    minutesSinceReply: 1,
   },
   {
     id: "d4",
@@ -94,6 +143,9 @@ export const drivers: Driver[] = [
     activity7d: [10, 12, 15, 17, 20, 18, 19],
     deliveriesDone: 4,
     deliveriesTotal: 7,
+    priority: "normal",
+    labels: ["aguardando", "nota-fiscal"],
+    minutesSinceReply: 5,
   },
   {
     id: "d5",
@@ -110,6 +162,9 @@ export const drivers: Driver[] = [
     activity7d: [22, 18, 20, 14, 16, 10, 12],
     deliveriesDone: 9,
     deliveriesTotal: 9,
+    priority: "normal",
+    labels: ["frete"],
+    minutesSinceReply: 120,
   },
 ];
 
@@ -158,10 +213,9 @@ export const messagesLast14Days = [
   { day: "14/10", recebidas: 348, enviadas: 302 },
 ];
 
-// heatmap: 2 rows (manhã/tarde) x 7 cols (08h-20h em 2h)
 export const heatmap: number[] = [
-  10, 22, 45, 60, 55, 30, 12, // manhã à tarde
-  18, 40, 78, 92, 70, 42, 20, // tarde à noite
+  10, 22, 45, 60, 55, 30, 12,
+  18, 40, 78, 92, 70, 42, 20,
 ];
 
 export const kpiToday = {
@@ -173,6 +227,25 @@ export const kpiToday = {
   peakWindow: "14h–16h",
 };
 
+export type NotificationKind = "photo" | "silence" | "offline" | "nf" | "info";
+
+export interface AppNotification {
+  id: string;
+  kind: NotificationKind;
+  driverId?: string;
+  title: string;
+  time: string;
+  unread: boolean;
+}
+
+export const notifications: AppNotification[] = [
+  { id: "n1", kind: "photo", driverId: "d1", title: "Ricardo enviou uma foto da nota fiscal", time: "há 2 min", unread: true },
+  { id: "n2", kind: "silence", driverId: "d2", title: "Marcos não responde há 15 minutos", time: "há 15 min", unread: true },
+  { id: "n3", kind: "nf", driverId: "d4", title: "NF rejeitada — pátio 3 Guarulhos", time: "há 22 min", unread: true },
+  { id: "n4", kind: "offline", driverId: "d5", title: "André ficou offline após check-out", time: "há 2 h", unread: false },
+  { id: "n5", kind: "info", title: "Pico de operação detectado (14h–16h)", time: "há 3 h", unread: false },
+];
+
 export function statusColor(s: DriverStatus) {
   if (s === "online") return "bg-success";
   if (s === "idle") return "bg-warning";
@@ -183,4 +256,10 @@ export function statusLabel(s: DriverStatus) {
   if (s === "online") return "Online";
   if (s === "idle") return "Em pausa";
   return "Offline";
+}
+
+export function priorityMeta(p: Priority) {
+  if (p === "critical") return { label: "Crítica", dot: "bg-destructive", ring: "ring-destructive/40", chip: "bg-destructive/15 text-destructive" };
+  if (p === "high") return { label: "Alta", dot: "bg-ember", ring: "ring-ember/40", chip: "bg-ember/15 text-ember" };
+  return { label: "Normal", dot: "bg-muted-foreground/40", ring: "ring-transparent", chip: "bg-muted text-muted-foreground" };
 }

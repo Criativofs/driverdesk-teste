@@ -1,17 +1,40 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Info, Paperclip, Send, Smile, X } from "lucide-react";
-import { drivers, messagesByDriver, statusColor, statusLabel, type Driver, type Message } from "@/lib/mock-data";
+import {
+  drivers,
+  messagesByDriver,
+  statusColor,
+  statusLabel,
+  LABELS,
+  labelById,
+  priorityMeta,
+  type Driver,
+  type Message,
+  type LabelId,
+} from "@/lib/mock-data";
 
-export function ChatPanel() {
-  const [selectedId, setSelectedId] = useState<string>(drivers[0].id);
+export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
+  const [selectedId, setSelectedId] = useState<string>(focusDriverId ?? drivers[0].id);
   const [threads, setThreads] = useState<Record<string, Message[]>>(() => ({
     ...messagesByDriver,
   }));
   const [draft, setDraft] = useState("");
-  // Mobile view state: "list" or "chat"
-  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [mobileView, setMobileView] = useState<"list" | "chat">(focusDriverId ? "chat" : "list");
   const [contextOpen, setContextOpen] = useState(false);
+  const [filter, setFilter] = useState<LabelId | "all">("all");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (focusDriverId) {
+      setSelectedId(focusDriverId);
+      setMobileView("chat");
+    }
+  }, [focusDriverId]);
+
+  const filteredDrivers = useMemo(
+    () => (filter === "all" ? drivers : drivers.filter((d) => d.labels.includes(filter))),
+    [filter],
+  );
 
   const selected = drivers.find((d) => d.id === selectedId)!;
   const messages = threads[selectedId] ?? [];
@@ -53,8 +76,22 @@ export function ChatPanel() {
             Conversas
           </h3>
         </div>
+        <div className="px-3 py-2 border-b border-hairline flex gap-1 overflow-x-auto">
+          <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
+            Todas
+          </FilterChip>
+          {LABELS.map((l) => (
+            <FilterChip
+              key={l.id}
+              active={filter === l.id}
+              onClick={() => setFilter(l.id)}
+            >
+              {l.name}
+            </FilterChip>
+          ))}
+        </div>
         <div className="flex-1 overflow-y-auto divide-y divide-hairline">
-          {drivers.map((d) => (
+          {filteredDrivers.map((d) => (
             <ConversationRow
               key={d.id}
               driver={d}
@@ -66,6 +103,11 @@ export function ChatPanel() {
               }}
             />
           ))}
+          {filteredDrivers.length === 0 && (
+            <div className="px-4 py-8 text-center text-xs text-muted-foreground">
+              Nenhuma conversa com esta etiqueta
+            </div>
+          )}
         </div>
       </div>
 
@@ -198,7 +240,11 @@ function ConversationRow({
     >
       {active && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-ember" />}
       <div className="flex items-start gap-3">
-        <div className="size-9 rounded-full bg-muted flex items-center justify-center text-[11px] font-bold shrink-0 relative">
+        <span
+          className={`size-1.5 rounded-full mt-3 shrink-0 ${priorityMeta(driver.priority).dot}`}
+          title={`Prioridade ${priorityMeta(driver.priority).label}`}
+        />
+        <div className={`size-9 rounded-full bg-muted flex items-center justify-center text-[11px] font-bold shrink-0 relative ring-2 ${priorityMeta(driver.priority).ring}`}>
           {driver.initials}
           <span
             className={`absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-panel ${statusColor(
@@ -217,6 +263,21 @@ function ConversationRow({
             {last?.direction === "out" ? "Você: " : ""}
             {last?.text ?? "Sem mensagens"}
           </p>
+          {driver.labels.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {driver.labels.slice(0, 3).map((l) => {
+                const def = labelById(l);
+                return (
+                  <span
+                    key={l}
+                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${def.color} ${def.text}`}
+                  >
+                    {def.name}
+                  </span>
+                );
+              })}
+            </div>
+          )}
         </div>
         {driver.unread > 0 && (
           <span className="size-4 bg-ember text-ember-foreground text-[10px] font-bold rounded-full flex items-center justify-center shrink-0 self-center">
@@ -224,6 +285,29 @@ function ConversationRow({
           </span>
         )}
       </div>
+    </button>
+  );
+}
+
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full border transition-colors ${
+        active
+          ? "bg-navy text-navy-foreground border-navy"
+          : "bg-transparent text-muted-foreground border-hairline hover:text-foreground hover:border-foreground/30"
+      }`}
+    >
+      {children}
     </button>
   );
 }

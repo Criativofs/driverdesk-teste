@@ -1,12 +1,15 @@
 import { Menu } from "lucide-react";
 import { CENTRAL_NUMBER } from "@/lib/mock-data";
+import { NotificationBell } from "./NotificationBell";
 
 export function TopBar({
   operator = "Matriz Sul",
   onMenuClick,
+  onOpenDriver,
 }: {
   operator?: string;
   onMenuClick?: () => void;
+  onOpenDriver?: (driverId: string) => void;
 }) {
   return (
     <header className="h-16 shrink-0 bg-panel border-b border-hairline px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
@@ -33,7 +36,8 @@ export function TopBar({
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <NotificationBell onOpenDriver={onOpenDriver} />
         <div className="text-right hidden sm:block">
           <p className="text-xs font-bold">Operador: {operator}</p>
           <p className="text-[10px] text-muted-foreground">Sessão iniciada há 4h 12m</p>
@@ -45,3 +49,4 @@ export function TopBar({
     </header>
   );
 }
+
