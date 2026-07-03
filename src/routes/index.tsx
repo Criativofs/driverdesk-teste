@@ -14,21 +14,24 @@ import { DriversView } from "@/components/dashboard/DriversView";
 import { ReportsView } from "@/components/dashboard/ReportsView";
 import { SettingsView } from "@/components/dashboard/SettingsView";
 import { OverviewDashboard } from "@/components/dashboard/OverviewDashboard";
+import { RidesView } from "@/components/rides/RidesView";
+import { ClientsView } from "@/components/clients/ClientsView";
+import { RidesProvider } from "@/lib/rides-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DriverDesk — Central de despacho WhatsApp" },
+      { title: "DriverDesk — Central de corridas" },
       {
         name: "description",
         content:
-          "Dashboard operacional em tempo real para gerenciar conversas de WhatsApp entre a central e até cinco motoristas, com prioridades, etiquetas e alertas.",
+          "Central de corridas em tempo real: fila de solicitações, atribuição de motoristas, cadastro de clientes e inbox WhatsApp em um só painel.",
       },
-      { property: "og:title", content: "DriverDesk — Central de despacho WhatsApp" },
+      { property: "og:title", content: "DriverDesk — Central de corridas" },
       {
         property: "og:description",
         content:
-          "Painel operacional ao vivo, inbox unificada com prioridades e etiquetas, e notificações da frota.",
+          "Fila de corridas, mapa da frota e inbox unificada de WhatsApp para operadores de transporte particular.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -37,13 +40,16 @@ export const Route = createFileRoute("/")({
 });
 
 const titles: Record<Section, { title: string; subtitle: string }> = {
+  rides: { title: "Corridas", subtitle: "Fila em tempo real, atribuição e agendamentos" },
   overview: { title: "Painel operacional", subtitle: "Frota, filas e alertas em tempo real" },
-  inbox: { title: "Inbox unificada", subtitle: "5 conversas em tempo real com os motoristas" },
-  drivers: { title: "Motoristas", subtitle: "Cadastro e status da frota conectada" },
+  inbox: { title: "Inbox unificada", subtitle: "Conversas em tempo real com os motoristas" },
+  clients: { title: "Clientes", subtitle: "Cadastro, histórico e endereços favoritos" },
+  drivers: { title: "Motoristas", subtitle: "Cadastro e status operacional da frota" },
   analytics: { title: "Analytics", subtitle: "Volume, tempo de resposta e horários de pico" },
   reports: { title: "Relatórios", subtitle: "Exportações de desempenho por período" },
   settings: { title: "Configurações", subtitle: "Integração WhatsApp e número central" },
 };
+
 
 function Dashboard() {
   const [section, setSection] = useState<Section>("overview");
