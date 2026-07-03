@@ -4,7 +4,7 @@ import { drivers, kpiToday } from "@/lib/mock-data";
 export function ReportsView() {
   return (
     <div className="space-y-6">
-      <div className="bg-panel border border-hairline rounded-xl p-6 flex items-center justify-between">
+      <div className="bg-panel border border-hairline rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold">Relatório operacional</h3>
           <p className="text-xs text-muted-foreground mt-1">
@@ -21,11 +21,14 @@ export function ReportsView() {
         </div>
       </div>
 
+
       <div className="bg-panel border border-hairline rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-hairline">
           <h3 className="text-sm font-bold">Desempenho por motorista</h3>
         </div>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
+
           <thead className="bg-muted/50 text-[10px] uppercase tracking-widest text-muted-foreground">
             <tr>
               <th className="text-left px-6 py-3 font-semibold">Motorista</th>
@@ -73,7 +76,9 @@ export function ReportsView() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
+
     </div>
   );
 }

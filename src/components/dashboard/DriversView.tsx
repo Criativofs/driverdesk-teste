@@ -3,15 +3,15 @@ import { drivers, statusColor, statusLabel, CENTRAL_NUMBER } from "@/lib/mock-da
 export function DriversView() {
   return (
     <div className="space-y-6">
-      <div className="bg-panel border border-hairline rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-panel border border-hairline rounded-xl p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
           <div>
             <h3 className="text-sm font-bold">Número central de controle</h3>
             <p className="text-xs text-muted-foreground mt-1">
               Todas as mensagens são enviadas em nome deste número.
             </p>
           </div>
-          <div className="text-right">
+          <div className="sm:text-right">
             <p className="text-lg font-bold tabular-nums">{CENTRAL_NUMBER}</p>
             <p className="text-[11px] text-success font-semibold uppercase tracking-widest">
               Conectado
@@ -20,6 +20,7 @@ export function DriversView() {
         </div>
       </div>
 
+
       <div className="bg-panel border border-hairline rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-hairline flex items-center justify-between">
           <h3 className="text-sm font-bold">Motoristas cadastrados ({drivers.length}/5)</h3>
@@ -27,7 +28,9 @@ export function DriversView() {
             + Adicionar motorista
           </button>
         </div>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[720px]">
+
           <thead className="bg-muted/50 text-[10px] uppercase tracking-widest text-muted-foreground">
             <tr>
               <th className="text-left px-6 py-3 font-semibold">Motorista</th>
@@ -66,7 +69,9 @@ export function DriversView() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
+
     </div>
   );
 }

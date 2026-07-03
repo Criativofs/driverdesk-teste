@@ -15,7 +15,7 @@ export function Analytics() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Kpi label="Mensagens hoje" value={kpiToday.messages.toLocaleString("pt-BR")} delta="+12%" />
         <Kpi
           label="Motoristas ativos"
@@ -27,8 +27,9 @@ export function Analytics() {
         <Kpi label="Taxa de resolução" value={kpiToday.resolutionRate} delta="+2.1%" positive />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 bg-panel border border-hairline rounded-xl p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className="lg:col-span-2 bg-panel border border-hairline rounded-xl p-4 sm:p-6">
+
           <div className="flex items-baseline justify-between mb-4">
             <h3 className="text-sm font-bold">Volume de mensagens · últimos 14 dias</h3>
             <div className="flex items-center gap-4 text-[11px] text-muted-foreground">

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Paperclip, Send, Smile } from "lucide-react";
+import { ArrowLeft, Info, Paperclip, Send, Smile, X } from "lucide-react";
 import { drivers, messagesByDriver, statusColor, statusLabel, type Driver, type Message } from "@/lib/mock-data";
 
 export function ChatPanel() {
@@ -8,6 +8,9 @@ export function ChatPanel() {
     ...messagesByDriver,
   }));
   const [draft, setDraft] = useState("");
+  // Mobile view state: "list" or "chat"
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [contextOpen, setContextOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const selected = drivers.find((d) => d.id === selectedId)!;
@@ -38,9 +41,13 @@ export function ChatPanel() {
   }
 
   return (
-    <div className="grid grid-cols-12 gap-6 h-full min-h-0">
+    <div className="lg:grid lg:grid-cols-12 lg:gap-6 h-full min-h-0 flex flex-col">
       {/* Conversations list */}
-      <div className="col-span-3 bg-panel border border-hairline rounded-xl flex flex-col overflow-hidden">
+      <div
+        className={`lg:col-span-3 bg-panel border border-hairline rounded-xl flex-col overflow-hidden ${
+          mobileView === "list" ? "flex" : "hidden"
+        } lg:flex h-full min-h-0`}
+      >
         <div className="px-4 py-3 border-b border-hairline">
           <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             Conversas
@@ -53,49 +60,69 @@ export function ChatPanel() {
               driver={d}
               last={threads[d.id]?.at(-1)}
               active={d.id === selectedId}
-              onClick={() => setSelectedId(d.id)}
+              onClick={() => {
+                setSelectedId(d.id);
+                setMobileView("chat");
+              }}
             />
           ))}
         </div>
       </div>
 
       {/* Chat window */}
-      <div className="col-span-6 bg-panel border border-hairline rounded-xl flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-hairline flex justify-between items-center bg-muted/40">
-          <div className="flex items-center gap-3">
-            <div className="size-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
+      <div
+        className={`lg:col-span-6 bg-panel border border-hairline rounded-xl flex-col overflow-hidden ${
+          mobileView === "chat" ? "flex" : "hidden"
+        } lg:flex h-full min-h-0`}
+      >
+        <div className="p-3 sm:p-4 border-b border-hairline flex justify-between items-center bg-muted/40 gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <button
+              onClick={() => setMobileView("list")}
+              className="lg:hidden p-1.5 -ml-1 rounded hover:bg-muted shrink-0"
+              aria-label="Voltar"
+            >
+              <ArrowLeft className="size-4" />
+            </button>
+            <div className="size-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold shrink-0">
               {selected.initials}
             </div>
-            <div>
-              <h4 className="text-sm font-bold flex items-center gap-2">
-                {selected.name}
-                <span className="text-[10px] font-normal text-muted-foreground">
+            <div className="min-w-0">
+              <h4 className="text-sm font-bold flex items-center gap-2 truncate">
+                <span className="truncate">{selected.name}</span>
+                <span className="text-[10px] font-normal text-muted-foreground shrink-0">
                   #{selected.code}
                 </span>
               </h4>
-              <p className="text-[11px] text-success font-medium flex items-center gap-1.5">
-                <span className={`size-1.5 rounded-full ${statusColor(selected.status)}`} />
-                {statusLabel(selected.status)} • {selected.route}
+              <p className="text-[11px] text-success font-medium flex items-center gap-1.5 truncate">
+                <span className={`size-1.5 rounded-full shrink-0 ${statusColor(selected.status)}`} />
+                <span className="truncate">
+                  {statusLabel(selected.status)} • {selected.route}
+                </span>
               </p>
             </div>
           </div>
-          <button className="text-[11px] font-semibold text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-muted transition-colors">
-            Detalhes
+          <button
+            onClick={() => setContextOpen(true)}
+            className="text-[11px] font-semibold text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-muted transition-colors flex items-center gap-1 shrink-0"
+          >
+            <Info className="size-3.5 lg:hidden" />
+            <span className="hidden lg:inline">Detalhes</span>
           </button>
         </div>
 
-        <div ref={scrollRef} className="flex-1 p-6 space-y-4 overflow-y-auto bg-background/40">
+        <div ref={scrollRef} className="flex-1 p-4 sm:p-6 space-y-4 overflow-y-auto bg-background/40">
           {messages.map((m) => (
             <MessageBubble key={m.id} m={m} />
           ))}
         </div>
 
-        <div className="p-3 border-t border-hairline bg-panel">
-          <div className="flex items-end gap-2">
-            <button className="p-2 text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors">
+        <div className="p-2 sm:p-3 border-t border-hairline bg-panel">
+          <div className="flex items-end gap-1.5 sm:gap-2">
+            <button className="p-2 text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors hidden sm:block">
               <Paperclip className="size-4" />
             </button>
-            <button className="p-2 text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors">
+            <button className="p-2 text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors hidden sm:block">
               <Smile className="size-4" />
             </button>
             <textarea
@@ -108,25 +135,45 @@ export function ChatPanel() {
                 }
               }}
               rows={1}
-              placeholder={`Responder em nome da Central para ${selected.name.split(" ")[0]}…`}
-              className="flex-1 resize-none bg-muted/50 border border-hairline rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ember/40 max-h-32"
+              placeholder={`Responder a ${selected.name.split(" ")[0]}…`}
+              className="flex-1 resize-none bg-muted/50 border border-hairline rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ember/40 max-h-32 min-w-0"
             />
             <button
               onClick={send}
               disabled={!draft.trim()}
-              className="bg-navy text-navy-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-navy/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 active:scale-95"
+              className="bg-navy text-navy-foreground px-3 sm:px-4 py-2 rounded-lg text-sm font-bold hover:bg-navy/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 active:scale-95 shrink-0"
             >
               <Send className="size-4" />
-              Enviar
+              <span className="hidden sm:inline">Enviar</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Driver context panel */}
-      <div className="col-span-3 space-y-4 min-h-0 overflow-y-auto">
+      {/* Driver context panel - desktop */}
+      <div className="col-span-3 space-y-4 min-h-0 overflow-y-auto hidden lg:block">
         <DriverContext driver={selected} />
       </div>
+
+      {/* Driver context - mobile drawer */}
+      {contextOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          <div className="flex-1 bg-black/40" onClick={() => setContextOpen(false)} />
+          <div className="w-80 max-w-[85vw] bg-background border-l border-hairline overflow-y-auto p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold">Detalhes</h3>
+              <button
+                onClick={() => setContextOpen(false)}
+                className="p-1.5 rounded hover:bg-muted"
+                aria-label="Fechar"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <DriverContext driver={selected} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -186,7 +233,7 @@ function MessageBubble({ m }: { m: Message }) {
   return (
     <div className={`flex flex-col ${out ? "items-end" : "items-start"}`}>
       <div
-        className={`p-3 rounded-2xl max-w-[80%] text-sm leading-relaxed ${
+        className={`p-3 rounded-2xl max-w-[85%] sm:max-w-[80%] text-sm leading-relaxed ${
           out
             ? "bg-navy text-navy-foreground rounded-tr-sm"
             : "bg-muted text-foreground rounded-tl-sm"
@@ -213,12 +260,12 @@ function DriverContext({ driver }: { driver: Driver }) {
           Motorista
         </h3>
         <div className="flex items-center gap-3 mb-4">
-          <div className="size-11 rounded-full bg-navy text-navy-foreground flex items-center justify-center text-sm font-bold">
+          <div className="size-11 rounded-full bg-navy text-navy-foreground flex items-center justify-center text-sm font-bold shrink-0">
             {driver.initials}
           </div>
-          <div>
-            <p className="text-sm font-bold leading-tight">{driver.name}</p>
-            <p className="text-[11px] text-muted-foreground">{driver.phone}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold leading-tight truncate">{driver.name}</p>
+            <p className="text-[11px] text-muted-foreground truncate">{driver.phone}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mb-4">
@@ -263,9 +310,9 @@ function DriverContext({ driver }: { driver: Driver }) {
           />
         </div>
         <div className="mt-4 space-y-2 text-xs">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Rota atual</span>
-            <span className="font-medium text-right max-w-[60%] truncate">{driver.route}</span>
+          <div className="flex justify-between gap-2">
+            <span className="text-muted-foreground shrink-0">Rota atual</span>
+            <span className="font-medium text-right truncate">{driver.route}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Última atividade</span>
