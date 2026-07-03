@@ -30,11 +30,11 @@ export function Sidebar({
             <span className="absolute -top-0.5 -right-0.5 size-2 bg-ember rounded-full ring-2 ring-panel" />
           </div>
           <div>
-            <h1 className="font-bold text-[15px] tracking-tight leading-none">
-              LOGIFLOW <span className="text-ember">HUB</span>
+            <h1 className="font-bold text-[15px] tracking-tight leading-none uppercase">
+              Driver<span className="text-ember">Desk</span>
             </h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
-              Dispatch v1.0
+              {APP_TAGLINE}
             </p>
           </div>
         </div>
