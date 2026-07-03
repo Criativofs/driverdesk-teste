@@ -1,9 +1,10 @@
-import { Truck, MessageSquare, BarChart3, FileText, Users, Settings } from "lucide-react";
-import { kpiToday, drivers, statusColor } from "@/lib/mock-data";
+import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard } from "lucide-react";
+import { kpiToday, drivers, statusColor, APP_NAME, APP_TAGLINE } from "@/lib/mock-data";
 
-export type Section = "inbox" | "drivers" | "analytics" | "reports" | "settings";
+export type Section = "overview" | "inbox" | "drivers" | "analytics" | "reports" | "settings";
 
 const nav: { id: Section; label: string; icon: typeof MessageSquare }[] = [
+  { id: "overview", label: "Painel", icon: LayoutDashboard },
   { id: "inbox", label: "Inbox", icon: MessageSquare },
   { id: "drivers", label: "Motoristas", icon: Users },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
