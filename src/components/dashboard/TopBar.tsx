@@ -20,6 +20,7 @@ export function TopBar({
     navigate({ to: "/auth", replace: true });
   }
 
+  return (
     <header className="h-16 shrink-0 bg-panel border-b border-hairline px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
       <div className="flex items-center gap-3 min-w-0">
         {onMenuClick && (
@@ -53,8 +54,17 @@ export function TopBar({
         <div className="size-8 bg-navy text-navy-foreground rounded-full flex items-center justify-center text-xs font-bold">
           MS
         </div>
+        <button
+          onClick={handleSignOut}
+          className="p-2 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+          aria-label="Sair"
+          title="Sair"
+        >
+          <LogOut className="size-4" />
+        </button>
       </div>
     </header>
+
   );
 }
 
