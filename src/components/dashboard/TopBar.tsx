@@ -1,6 +1,9 @@
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { CENTRAL_NUMBER } from "@/lib/mock-data";
 import { NotificationBell } from "./NotificationBell";
+import { supabase } from "@/integrations/supabase/client";
+
 
 export function TopBar({
   operator = "Matriz Sul",
@@ -11,6 +14,12 @@ export function TopBar({
   onMenuClick?: () => void;
   onOpenDriver?: (driverId: string) => void;
 }) {
+  const navigate = useNavigate();
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+
   return (
     <header className="h-16 shrink-0 bg-panel border-b border-hairline px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
       <div className="flex items-center gap-3 min-w-0">
@@ -45,8 +54,17 @@ export function TopBar({
         <div className="size-8 bg-navy text-navy-foreground rounded-full flex items-center justify-center text-xs font-bold">
           MS
         </div>
+        <button
+          onClick={handleSignOut}
+          className="p-2 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+          aria-label="Sair"
+          title="Sair"
+        >
+          <LogOut className="size-4" />
+        </button>
       </div>
     </header>
+
   );
 }
 
