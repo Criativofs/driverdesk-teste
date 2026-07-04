@@ -41,6 +41,7 @@ export const Route = createFileRoute("/")({
 
 const titles: Record<Section, { title: string; subtitle: string }> = {
   rides: { title: "Corridas", subtitle: "Fila em tempo real, atribuição e agendamentos" },
+  map: { title: "Mapa da frota", subtitle: "Motoristas em tempo real com status operacional" },
   overview: { title: "Painel operacional", subtitle: "Frota, filas e alertas em tempo real" },
   inbox: { title: "Inbox unificada", subtitle: "Conversas em tempo real com os motoristas" },
   clients: { title: "Clientes", subtitle: "Cadastro, histórico e endereços favoritos" },
