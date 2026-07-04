@@ -104,6 +104,11 @@ function Dashboard() {
           </div>
           <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
             {section === "rides" && <RidesView />}
+            {section === "map" && (
+              <div className="h-[calc(100vh-160px)] min-h-[420px]">
+                <FleetMap />
+              </div>
+            )}
             {section === "overview" && <OverviewDashboard onOpenInbox={openInbox} />}
             {section === "inbox" && <ChatPanel focusDriverId={inboxFocusDriver} />}
             {section === "clients" && <ClientsView />}
