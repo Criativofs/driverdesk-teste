@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "DriveDesk — Central de corridas" },
+      { name: "description", content: "Central de corridas em tempo real: fila de solicitações, atribuição de motoristas, cadastro de clientes e inbox WhatsApp em um só painel." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "DriveDesk — Central de corridas" },
+      { property: "og:description", content: "Central de corridas em tempo real: fila de solicitações, atribuição de motoristas, cadastro de clientes e inbox WhatsApp em um só painel." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "DriveDesk — Central de corridas" },
+      { name: "twitter:description", content: "Central de corridas em tempo real: fila de solicitações, atribuição de motoristas, cadastro de clientes e inbox WhatsApp em um só painel." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/HtcoBf6vRCc7PkAnfobrK1JtIhU2/social-images/social-1783186081162-banner_social.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/HtcoBf6vRCc7PkAnfobrK1JtIhU2/social-images/social-1783186081162-banner_social.webp" },
     ],
     links: [
       {
