@@ -30,8 +30,8 @@ export function Sidebar({
     <aside className="w-72 h-full shrink-0 bg-panel border-r border-hairline flex flex-col">
       <div className="p-6 border-b border-hairline">
         <div className="flex items-center gap-2.5">
-          <div className="size-9 bg-navy rounded flex items-center justify-center relative">
-            <Truck className="size-4 text-navy-foreground" strokeWidth={2.5} />
+          <div className="size-9 bg-navy rounded flex items-center justify-center relative overflow-hidden">
+            <img src={brandIcon.url} alt="DriveDesk" className="size-7 object-contain" />
             <span className="absolute -top-0.5 -right-0.5 size-2 bg-ember rounded-full ring-2 ring-panel" />
           </div>
           <div>
