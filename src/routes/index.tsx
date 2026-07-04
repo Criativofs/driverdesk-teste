@@ -16,6 +16,7 @@ import { SettingsView } from "@/components/dashboard/SettingsView";
 import { OverviewDashboard } from "@/components/dashboard/OverviewDashboard";
 import { RidesView } from "@/components/rides/RidesView";
 import { ClientsView } from "@/components/clients/ClientsView";
+import { FleetMap } from "@/components/map/FleetMap";
 import { RidesProvider } from "@/lib/rides-store";
 
 export const Route = createFileRoute("/")({
