@@ -22,13 +22,13 @@ import { RidesProvider } from "@/lib/rides-store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DriverDesk — Central de corridas" },
+      { title: "DriveDesk — Central de corridas" },
       {
         name: "description",
         content:
           "Central de corridas em tempo real: fila de solicitações, atribuição de motoristas, cadastro de clientes e inbox WhatsApp em um só painel.",
       },
-      { property: "og:title", content: "DriverDesk — Central de corridas" },
+      { property: "og:title", content: "DriveDesk — Central de corridas" },
       {
         property: "og:description",
         content:

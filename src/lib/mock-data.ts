@@ -65,7 +65,7 @@ export interface Message {
   kind?: "text" | "audio" | "image";
 }
 
-export const APP_NAME = "DriverDesk";
+export const APP_NAME = "DriveDesk";
 export const APP_TAGLINE = "Dispatch v1.0";
 export const CENTRAL_NUMBER = "+55 (11) 99876-5432";
 export const CENTRAL_LABEL = "Central de Controle";

@@ -36,7 +36,7 @@ export function Sidebar({
           </div>
           <div>
             <h1 className="font-bold text-[15px] tracking-tight leading-none uppercase">
-              Driver<span className="text-ember">Desk</span>
+              Drive<span className="text-ember">Desk</span>
             </h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
               {APP_TAGLINE}
