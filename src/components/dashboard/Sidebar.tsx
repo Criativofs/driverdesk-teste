@@ -1,4 +1,5 @@
-import { Truck, MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard, Car, UserRound, Map as MapIcon } from "lucide-react";
+import { MessageSquare, BarChart3, FileText, Users, Settings, LayoutDashboard, Car, UserRound, Map as MapIcon } from "lucide-react";
+import brandIcon from "@/assets/drivedesk-icon.png.asset.json";
 import { kpiToday, drivers, statusColor, APP_TAGLINE } from "@/lib/mock-data";
 
 export type Section = "overview" | "rides" | "map" | "inbox" | "drivers" | "clients" | "analytics" | "reports" | "settings";
