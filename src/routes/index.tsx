@@ -16,6 +16,7 @@ import { SettingsView } from "@/components/dashboard/SettingsView";
 import { OverviewDashboard } from "@/components/dashboard/OverviewDashboard";
 import { RidesView } from "@/components/rides/RidesView";
 import { ClientsView } from "@/components/clients/ClientsView";
+import { FleetMap } from "@/components/map/FleetMap";
 import { RidesProvider } from "@/lib/rides-store";
 
 export const Route = createFileRoute("/")({
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/")({
 
 const titles: Record<Section, { title: string; subtitle: string }> = {
   rides: { title: "Corridas", subtitle: "Fila em tempo real, atribuição e agendamentos" },
+  map: { title: "Mapa da frota", subtitle: "Motoristas em tempo real com status operacional" },
   overview: { title: "Painel operacional", subtitle: "Frota, filas e alertas em tempo real" },
   inbox: { title: "Inbox unificada", subtitle: "Conversas em tempo real com os motoristas" },
   clients: { title: "Clientes", subtitle: "Cadastro, histórico e endereços favoritos" },
@@ -102,6 +104,11 @@ function Dashboard() {
           </div>
           <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 lg:p-6">
             {section === "rides" && <RidesView />}
+            {section === "map" && (
+              <div className="h-[calc(100vh-160px)] min-h-[420px]">
+                <FleetMap />
+              </div>
+            )}
             {section === "overview" && <OverviewDashboard onOpenInbox={openInbox} />}
             {section === "inbox" && <ChatPanel focusDriverId={inboxFocusDriver} />}
             {section === "clients" && <ClientsView />}

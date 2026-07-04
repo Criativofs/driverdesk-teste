@@ -302,6 +302,18 @@ export const initialOpStatus: Record<string, OpStatus> = {
   d5: "offline",
 };
 
+// Coordenadas iniciais (São Paulo) para simulação de frota
+export const initialDriverLocations: Record<string, { lat: number; lng: number }> = {
+  d1: { lat: -23.5505, lng: -46.6333 }, // Sé
+  d2: { lat: -23.5975, lng: -46.6892 }, // Pinheiros
+  d3: { lat: -23.5613, lng: -46.6565 }, // Av. Paulista
+  d4: { lat: -23.5320, lng: -46.7920 }, // Osasco
+  d5: { lat: -23.6820, lng: -46.7050 }, // Santo Amaro
+};
+
+export const MAP_CENTER = { lat: -23.5629, lng: -46.6544 };
+
+
 export interface Client {
   id: string;
   name: string;
