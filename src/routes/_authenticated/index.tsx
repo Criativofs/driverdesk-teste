@@ -19,7 +19,7 @@ import { ClientsView } from "@/components/clients/ClientsView";
 import { FleetMap } from "@/components/map/FleetMap";
 import { RidesProvider } from "@/lib/rides-store";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "DriveDesk — Central de corridas" },
