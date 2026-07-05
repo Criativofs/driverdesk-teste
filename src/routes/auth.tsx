@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import brandIcon from "@/assets/drivedesk-icon.png";
+import brandIcon from "@/assets/drivedesk-icon.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -104,7 +104,7 @@ function AuthPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-3">
           <div className="mx-auto size-14 rounded-xl bg-navy flex items-center justify-center overflow-hidden">
-            <img src={brandIcon} alt="DriveDesk" className="size-10 object-contain" />
+            <img src={brandIcon.url} alt="DriveDesk" className="size-10 object-contain" />
           </div>
           <CardTitle className="text-2xl">DriveDesk</CardTitle>
           <CardDescription>
