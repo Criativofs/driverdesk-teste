@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import brandIcon from "@/assets/drivedesk-icon.png";
+import brandIcon from "@/assets/drivedesk-icon.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
