@@ -115,7 +115,11 @@ function AuthPage() {
           </div>
           <CardTitle className="text-2xl">DriveDesk</CardTitle>
           <CardDescription>
-            {mode === "signin" ? "Entre no painel operacional" : "Crie sua conta de operador"}
+            {mode === "signin"
+              ? "Entre no painel operacional"
+              : mode === "signup"
+                ? "Crie sua conta de operador"
+                : "Recuperar acesso à sua conta"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
