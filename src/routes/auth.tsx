@@ -21,7 +21,7 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-type Mode = "signin" | "signup";
+type Mode = "signin" | "signup" | "forgot";
 
 async function routeByRole(userId: string, navigate: (path: string) => void) {
   const { data } = await supabase
