@@ -163,32 +163,53 @@ function AuthPage() {
                 autoComplete="email"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-              />
-            </div>
+            {mode !== "forgot" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {mode === "signin" ? "Entrar" : "Criar conta"}
+              {mode === "signin"
+                ? "Entrar"
+                : mode === "signup"
+                  ? "Criar conta"
+                  : "Enviar link de recuperação"}
             </Button>
           </form>
 
-          <button
-            type="button"
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="w-full text-xs text-muted-foreground hover:text-foreground"
-          >
-            {mode === "signin"
-              ? "Não tem conta? Criar conta de operador"
-              : "Já tem conta? Entrar"}
-          </button>
+          <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+            {mode === "signin" && (
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="hover:text-foreground"
+              >
+                Esqueci minha senha
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() =>
+                setMode(mode === "signin" ? "signup" : "signin")
+              }
+              className="hover:text-foreground"
+            >
+              {mode === "signin"
+                ? "Não tem conta? Criar conta de operador"
+                : mode === "signup"
+                  ? "Já tem conta? Entrar"
+                  : "Voltar para o login"}
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
