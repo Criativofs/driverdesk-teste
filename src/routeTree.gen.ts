@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as ApiPublicBootstrapPasswordRouteImport } from './routes/api/public/bootstrap-password'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -28,47 +27,32 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiPublicBootstrapPasswordRoute =
-  ApiPublicBootstrapPasswordRouteImport.update({
-    id: '/api/public/bootstrap-password',
-    path: '/api/public/bootstrap-password',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
-  '/api/public/bootstrap-password': typeof ApiPublicBootstrapPasswordRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/': typeof AuthenticatedIndexRoute
-  '/api/public/bootstrap-password': typeof ApiPublicBootstrapPasswordRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/api/public/bootstrap-password': typeof ApiPublicBootstrapPasswordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/api/public/bootstrap-password'
+  fullPaths: '/' | '/auth'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/' | '/api/public/bootstrap-password'
-  id:
-    | '__root__'
-    | '/_authenticated'
-    | '/auth'
-    | '/_authenticated/'
-    | '/api/public/bootstrap-password'
+  to: '/auth' | '/'
+  id: '__root__' | '/_authenticated' | '/auth' | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  ApiPublicBootstrapPasswordRoute: typeof ApiPublicBootstrapPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -94,13 +78,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/bootstrap-password': {
-      id: '/api/public/bootstrap-password'
-      path: '/api/public/bootstrap-password'
-      fullPath: '/api/public/bootstrap-password'
-      preLoaderRoute: typeof ApiPublicBootstrapPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -118,7 +95,6 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  ApiPublicBootstrapPasswordRoute: ApiPublicBootstrapPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
