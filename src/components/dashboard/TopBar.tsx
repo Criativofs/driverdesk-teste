@@ -1,8 +1,8 @@
 import { LogOut, Menu } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { CENTRAL_NUMBER } from "@/lib/mock-data";
 import { NotificationBell } from "./NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
+import { useRides } from "@/lib/rides-store";
 
 
 export function TopBar({
@@ -15,6 +15,7 @@ export function TopBar({
   onOpenDriver?: (driverId: string) => void;
 }) {
   const navigate = useNavigate();
+  const { settings } = useRides();
   async function handleSignOut() {
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });
@@ -38,10 +39,10 @@ export function TopBar({
             <span className="relative inline-flex rounded-full size-2 bg-success" />
           </span>
           <span className="text-xs sm:text-sm font-medium truncate">
-            Central: {CENTRAL_NUMBER}
+            Central: {settings.centralNumber}
           </span>
           <span className="hidden sm:inline text-[10px] uppercase font-bold tracking-widest text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-            Mock
+            Real
           </span>
         </div>
       </div>

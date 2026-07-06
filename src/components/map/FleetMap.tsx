@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { drivers, initialDriverLocations, MAP_CENTER, opStatusMeta, type OpStatus } from "@/lib/mock-data";
+import { initialDriverLocations, MAP_CENTER, opStatusMeta, type OpStatus } from "@/lib/mock-data";
 import { useRides } from "@/lib/rides-store";
 import { Button } from "@/components/ui/button";
 
@@ -64,10 +64,10 @@ export function FleetMap({ compact = false }: { compact?: boolean }) {
   const mapRef = useRef<any>(null);
   const markersRef = useRef<Record<string, any>>({});
   const infoRef = useRef<any>(null);
-  const [locations, setLocations] = useState(initialDriverLocations);
+  const [locations, setLocations] = useState<Record<string, { lat: number; lng: number }>>(initialDriverLocations);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const { opStatus, rides, assignRide } = useRides();
+  const { opStatus, rides, assignRide, drivers } = useRides();
 
   // Load Maps + init
   useEffect(() => {
@@ -109,7 +109,7 @@ export function FleetMap({ compact = false }: { compact?: boolean }) {
         for (const d of drivers) {
           const s = opStatus[d.id];
           if (s === "offline" || s === "pausa") continue;
-          const cur = prev[d.id];
+          const cur = prev[d.id] ?? Object.values(initialDriverLocations)[Math.abs(d.id.length) % Object.values(initialDriverLocations).length];
           if (!cur) continue;
           next[d.id] = {
             lat: cur.lat + (Math.random() - 0.5) * 0.004,
@@ -129,7 +129,7 @@ export function FleetMap({ compact = false }: { compact?: boolean }) {
     if (status !== "ready" || !mapRef.current || !window.google) return;
     const g = window.google;
     for (const d of drivers) {
-      const loc = locations[d.id];
+      const loc = locations[d.id] ?? Object.values(initialDriverLocations)[Math.abs(d.id.length) % Object.values(initialDriverLocations).length];
       if (!loc) continue;
       const s = opStatus[d.id] ?? "offline";
       const color = statusColorHex(s);

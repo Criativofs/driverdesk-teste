@@ -1,6 +1,5 @@
 import { Activity, AlertTriangle, MessageCircle, Users, Clock, Inbox } from "lucide-react";
 import {
-  drivers,
   kpiToday,
   notifications,
   priorityMeta,
@@ -9,8 +8,10 @@ import {
   labelById,
   type Driver,
 } from "@/lib/mock-data";
+import { useRides } from "@/lib/rides-store";
 
 export function OverviewDashboard({ onOpenInbox }: { onOpenInbox?: (driverId?: string) => void }) {
+  const { drivers, loading } = useRides();
   const online = drivers.filter((d) => d.status === "online");
   const silent = drivers.filter((d) => d.minutesSinceReply >= 10 && d.status !== "offline");
   const open = drivers.filter((d) => d.status !== "offline");
@@ -45,6 +46,11 @@ export function OverviewDashboard({ onOpenInbox }: { onOpenInbox?: (driverId?: s
               .map((d) => (
                 <QueueRow key={d.id} driver={d} onOpen={() => onOpenInbox?.(d.id)} />
               ))}
+            {drivers.length === 0 && (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                {loading ? "Carregando motoristas do banco…" : "Nenhum motorista cadastrado."}
+              </div>
+            )}
           </div>
         </div>
 

@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          central_label: string
+          central_number: string
+          id: string
+          updated_at: string
+          whatsapp_connected: boolean
+        }
+        Insert: {
+          central_label?: string
+          central_number?: string
+          id: string
+          updated_at?: string
+          whatsapp_connected?: boolean
+        }
+        Update: {
+          central_label?: string
+          central_number?: string
+          id?: string
+          updated_at?: string
+          whatsapp_connected?: boolean
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           created_at: string
