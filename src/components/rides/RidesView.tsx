@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRides } from "@/lib/rides-store";
 import {
-  drivers,
   rideStatusMeta,
   opStatusMeta,
   type Ride,
@@ -51,7 +50,7 @@ function money(v: number) {
 }
 
 export function RidesView() {
-  const { rides, getClient, getDriverName, cancelRide, setRideStatus, updateRide } = useRides();
+  const { rides, drivers, loading, getClient, getDriverName, cancelRide, setRideStatus, updateRide } = useRides();
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]["id"]>("todas");
   const [search, setSearch] = useState("");
   const [newOpen, setNewOpen] = useState(false);
@@ -238,7 +237,7 @@ export function RidesView() {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-sm text-muted-foreground">
-                    Nenhuma corrida encontrada.
+                    {loading ? "Carregando corridas do banco…" : "Nenhuma corrida encontrada."}
                   </td>
                 </tr>
               )}
@@ -270,7 +269,7 @@ function KpiCard({ label, value, accent }: { label: string; value: string; accen
 }
 
 function NewRideDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
-  const { clients, createRide } = useRides();
+  const { clients, drivers, createRide } = useRides();
   const [clientId, setClientId] = useState<string>(clients[0]?.id ?? "");
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
@@ -366,7 +365,7 @@ function NewRideDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v
 }
 
 function AssignDialog({ ride, onClose }: { ride: Ride | null; onClose: () => void }) {
-  const { assignRide, opStatus, getClient } = useRides();
+  const { assignRide, opStatus, getClient, drivers } = useRides();
   const client = ride ? getClient(ride.clientId) : null;
   return (
     <Dialog open={!!ride} onOpenChange={(o) => !o && onClose()}>
