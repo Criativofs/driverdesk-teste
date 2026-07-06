@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Send, MessageSquare } from "lucide-react";
-import { drivers, CENTRAL_NUMBER, opStatusMeta, type OpStatus } from "@/lib/mock-data";
+import { opStatusMeta, type OpStatus } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,7 +30,7 @@ const OP_OPTIONS: OpStatus[] = [
 ];
 
 export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) => void }) {
-  const { opStatus, setDriverStatus, rides, assignRide, getClient } = useRides();
+  const { opStatus, setDriverStatus, rides, assignRide, getClient, drivers, settings, loading } = useRides();
   const [sendDriverId, setSendDriverId] = useState<string | null>(null);
   const pendingRides = rides.filter((r) => !r.driverId && r.status !== "cancelada" && r.status !== "concluida");
 
@@ -45,9 +45,9 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
             </p>
           </div>
           <div className="sm:text-right">
-            <p className="text-lg font-bold tabular-nums">{CENTRAL_NUMBER}</p>
+            <p className="text-lg font-bold tabular-nums">{settings.centralNumber}</p>
             <p className="text-[11px] text-success font-semibold uppercase tracking-widest">
-              Conectado
+              {settings.whatsappConnected ? "Conectado" : "Pendente"}
             </p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
 
       <div className="bg-panel border border-hairline rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-hairline flex items-center justify-between">
-          <h3 className="text-sm font-bold">Motoristas cadastrados ({drivers.length}/5)</h3>
+          <h3 className="text-sm font-bold">Motoristas cadastrados ({drivers.length})</h3>
           <button className="text-[11px] font-bold uppercase tracking-widest text-ember hover:text-ember/80">
             + Adicionar motorista
           </button>
@@ -141,6 +141,13 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
                   </tr>
                 );
               })}
+              {drivers.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-muted-foreground">
+                    {loading ? "Carregando motoristas do banco…" : "Nenhum motorista cadastrado."}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
