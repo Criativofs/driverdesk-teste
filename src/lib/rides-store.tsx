@@ -357,6 +357,33 @@ export function RidesProvider({ children }: { children: ReactNode }) {
     return client;
   }, [refresh]);
 
+  const addDriver: RidesStore["addDriver"] = useCallback(({ name, phone, code }) => {
+    const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
+    if (!trimmedName || !trimmedPhone) {
+      toast.error("Informe nome e telefone.");
+      return;
+    }
+    const nextCode = (code?.trim() || `M${String(driversList.length + 1).padStart(2, "0")}`).toUpperCase();
+    const insert: TablesInsert<"drivers"> = {
+      code: nextCode,
+      name: trimmedName,
+      phone: trimmedPhone,
+      status: "offline",
+      op_status: "offline",
+      active: true,
+    };
+    void supabase.from("drivers").insert(insert).then(({ error }) => {
+      if (error) {
+        toast.error(error.message || "Não foi possível cadastrar o motorista");
+        return;
+      }
+      toast.success("Motorista cadastrado", { description: `${trimmedName} • ${trimmedPhone}` });
+      void refresh();
+    });
+  }, [driversList.length, refresh]);
+
+
   const updateCentralNumber: RidesStore["updateCentralNumber"] = useCallback((centralNumber) => {
     const next = centralNumber.trim();
     if (!next) return toast.error("Informe o número central.");
