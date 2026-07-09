@@ -49,7 +49,7 @@ export function NotificationBell({ onOpenDriver }: { onOpenDriver?: (driverId: s
               Marcar como lidas
             </button>
           </div>
-          <div className="max-h-96 overflow-y-auto divide-y divide-hairline">
+          <div className="max-h-[70vh] sm:max-h-96 overflow-y-auto divide-y divide-hairline">
             {items.map((n) => (
               <button
                 key={n.id}
