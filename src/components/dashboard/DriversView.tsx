@@ -32,9 +32,21 @@ const OP_OPTIONS: OpStatus[] = [
 ];
 
 export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) => void }) {
-  const { opStatus, setDriverStatus, rides, assignRide, getClient, drivers, settings, loading } = useRides();
+  const { opStatus, setDriverStatus, rides, assignRide, getClient, drivers, settings, loading, addDriver } = useRides();
   const [sendDriverId, setSendDriverId] = useState<string | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [newCode, setNewCode] = useState("");
   const pendingRides = rides.filter((r) => !r.driverId && r.status !== "cancelada" && r.status !== "concluida");
+
+  const submitDriver = () => {
+    addDriver({ name: newName, phone: newPhone, code: newCode });
+    setNewName("");
+    setNewPhone("");
+    setNewCode("");
+    setAddOpen(false);
+  };
 
   return (
     <div className="space-y-6">
