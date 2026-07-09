@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Info, Paperclip, Send, Smile, X } from "lucide-react";
 import {
-  drivers,
+  drivers as mockDrivers,
   messagesByDriver,
   statusColor,
   statusLabel,
@@ -12,13 +12,26 @@ import {
   type Message,
   type LabelId,
 } from "@/lib/mock-data";
+import { useRides } from "@/lib/rides-store";
 
 export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
-  const resolveId = (id?: string) => {
-    if (!id) return drivers[0].id;
-    return drivers.some((d) => d.id === id) ? id : drivers[0].id;
+  const { drivers: realDrivers } = useRides();
+
+  // Merge: real DB drivers first, plus any mock-only ids (for demo conversations).
+  const allDrivers = useMemo<Driver[]>(() => {
+    const byId = new Map<string, Driver>();
+    for (const d of realDrivers) byId.set(d.id, d);
+    for (const d of mockDrivers) if (!byId.has(d.id)) byId.set(d.id, d);
+    return Array.from(byId.values());
+  }, [realDrivers]);
+
+  const resolveId = (id: string | undefined, list: Driver[]) => {
+    if (list.length === 0) return "";
+    if (!id) return list[0].id;
+    return list.some((d) => d.id === id) ? id : list[0].id;
   };
-  const [selectedId, setSelectedId] = useState<string>(resolveId(focusDriverId));
+
+  const [selectedId, setSelectedId] = useState<string>(() => resolveId(focusDriverId, allDrivers));
   const [threads, setThreads] = useState<Record<string, Message[]>>(() => ({
     ...messagesByDriver,
   }));
@@ -30,17 +43,24 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
 
   useEffect(() => {
     if (focusDriverId) {
-      setSelectedId(resolveId(focusDriverId));
+      setSelectedId(resolveId(focusDriverId, allDrivers));
       setMobileView("chat");
     }
-  }, [focusDriverId]);
+  }, [focusDriverId, allDrivers]);
+
+  // If the current selection disappears (e.g. drivers loaded after mount), fall back.
+  useEffect(() => {
+    if (allDrivers.length > 0 && !allDrivers.some((d) => d.id === selectedId)) {
+      setSelectedId(allDrivers[0].id);
+    }
+  }, [allDrivers, selectedId]);
 
   const filteredDrivers = useMemo(
-    () => (filter === "all" ? drivers : drivers.filter((d) => d.labels.includes(filter))),
-    [filter],
+    () => (filter === "all" ? allDrivers : allDrivers.filter((d) => d.labels.includes(filter))),
+    [filter, allDrivers],
   );
 
-  const selected = drivers.find((d) => d.id === selectedId) ?? drivers[0];
+  const selected = allDrivers.find((d) => d.id === selectedId) ?? allDrivers[0] ?? mockDrivers[0];
   const messages = threads[selectedId] ?? [];
 
   useEffect(() => {
