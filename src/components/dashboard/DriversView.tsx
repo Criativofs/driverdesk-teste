@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Send, MessageSquare } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { opStatusMeta, type OpStatus } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,9 +32,21 @@ const OP_OPTIONS: OpStatus[] = [
 ];
 
 export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) => void }) {
-  const { opStatus, setDriverStatus, rides, assignRide, getClient, drivers, settings, loading } = useRides();
+  const { opStatus, setDriverStatus, rides, assignRide, getClient, drivers, settings, loading, addDriver } = useRides();
   const [sendDriverId, setSendDriverId] = useState<string | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [newCode, setNewCode] = useState("");
   const pendingRides = rides.filter((r) => !r.driverId && r.status !== "cancelada" && r.status !== "concluida");
+
+  const submitDriver = () => {
+    addDriver({ name: newName, phone: newPhone, code: newCode });
+    setNewName("");
+    setNewPhone("");
+    setNewCode("");
+    setAddOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -56,7 +70,10 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
       <div className="bg-panel border border-hairline rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-hairline flex items-center justify-between">
           <h3 className="text-sm font-bold">Motoristas cadastrados ({drivers.length})</h3>
-          <button className="text-[11px] font-bold uppercase tracking-widest text-ember hover:text-ember/80">
+          <button
+            onClick={() => setAddOpen(true)}
+            className="text-[11px] font-bold uppercase tracking-widest text-ember hover:text-ember/80"
+          >
             + Adicionar motorista
           </button>
         </div>
@@ -201,6 +218,35 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
               })}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Novo motorista</DialogTitle>
+            <DialogDescription>
+              Cadastre um motorista real no banco. Use telefone em formato internacional (ex.: +55 11 99999-9999).
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-name">Nome</Label>
+              <Input id="drv-name" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Ex.: João Silva" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-phone">Telefone (WhatsApp)</Label>
+              <Input id="drv-phone" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+55 11 99999-9999" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-code">Código (opcional)</Label>
+              <Input id="drv-code" value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder={`M${String(drivers.length + 1).padStart(2, "0")}`} />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancelar</Button>
+            <Button onClick={submitDriver}>Cadastrar</Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

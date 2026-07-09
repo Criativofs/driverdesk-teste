@@ -33,6 +33,7 @@ interface RidesStore {
   setRideStatus: (id: string, status: RideStatus) => void;
   setDriverStatus: (driverId: string, status: OpStatus) => void;
   addClient: (c: Omit<Client, "id" | "ridesTotal" | "lastRide" | "rating" | "favorites"> & Partial<Client>) => Client;
+  addDriver: (d: { name: string; phone: string; code?: string }) => void;
   updateCentralNumber: (centralNumber: string) => void;
   getClient: (id: string) => Client | undefined;
   getDriverName: (id?: string) => string;
@@ -356,6 +357,33 @@ export function RidesProvider({ children }: { children: ReactNode }) {
     return client;
   }, [refresh]);
 
+  const addDriver: RidesStore["addDriver"] = useCallback(({ name, phone, code }) => {
+    const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
+    if (!trimmedName || !trimmedPhone) {
+      toast.error("Informe nome e telefone.");
+      return;
+    }
+    const nextCode = (code?.trim() || `M${String(driversList.length + 1).padStart(2, "0")}`).toUpperCase();
+    const insert: TablesInsert<"drivers"> = {
+      code: nextCode,
+      name: trimmedName,
+      phone: trimmedPhone,
+      status: "offline",
+      op_status: "offline",
+      active: true,
+    };
+    void supabase.from("drivers").insert(insert).then(({ error }) => {
+      if (error) {
+        toast.error(error.message || "Não foi possível cadastrar o motorista");
+        return;
+      }
+      toast.success("Motorista cadastrado", { description: `${trimmedName} • ${trimmedPhone}` });
+      void refresh();
+    });
+  }, [driversList.length, refresh]);
+
+
   const updateCentralNumber: RidesStore["updateCentralNumber"] = useCallback((centralNumber) => {
     const next = centralNumber.trim();
     if (!next) return toast.error("Informe o número central.");
@@ -388,13 +416,14 @@ export function RidesProvider({ children }: { children: ReactNode }) {
       setRideStatus,
       setDriverStatus,
       addClient,
+      addDriver,
       updateCentralNumber,
       getClient: (id) => clientsList.find((c) => c.id === id),
       getDriverName: (id) => (id ? driversList.find((d) => d.id === id)?.name ?? "—" : "—"),
       ridesByClient: (id) => rides.filter((r) => r.clientId === id),
       ridesByDriver: (id) => rides.filter((r) => r.driverId === id),
     }),
-    [clientsList, driversList, rides, loading, settings, opStatus, createRide, updateRide, cancelRide, assignRide, setRideStatus, setDriverStatus, addClient, updateCentralNumber],
+    [clientsList, driversList, rides, loading, settings, opStatus, createRide, updateRide, cancelRide, assignRide, setRideStatus, setDriverStatus, addClient, addDriver, updateCentralNumber],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
