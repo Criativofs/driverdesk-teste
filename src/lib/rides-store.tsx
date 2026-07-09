@@ -423,7 +423,7 @@ export function RidesProvider({ children }: { children: ReactNode }) {
       ridesByClient: (id) => rides.filter((r) => r.clientId === id),
       ridesByDriver: (id) => rides.filter((r) => r.driverId === id),
     }),
-    [clientsList, driversList, rides, loading, settings, opStatus, createRide, updateRide, cancelRide, assignRide, setRideStatus, setDriverStatus, addClient, updateCentralNumber],
+    [clientsList, driversList, rides, loading, settings, opStatus, createRide, updateRide, cancelRide, assignRide, setRideStatus, setDriverStatus, addClient, addDriver, updateCentralNumber],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
