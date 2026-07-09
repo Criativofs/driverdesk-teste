@@ -220,6 +220,35 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Novo motorista</DialogTitle>
+            <DialogDescription>
+              Cadastre um motorista real no banco. Use telefone em formato internacional (ex.: +55 11 99999-9999).
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-name">Nome</Label>
+              <Input id="drv-name" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Ex.: João Silva" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-phone">Telefone (WhatsApp)</Label>
+              <Input id="drv-phone" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+55 11 99999-9999" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="drv-code">Código (opcional)</Label>
+              <Input id="drv-code" value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder={`M${String(drivers.length + 1).padStart(2, "0")}`} />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancelar</Button>
+            <Button onClick={submitDriver}>Cadastrar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
