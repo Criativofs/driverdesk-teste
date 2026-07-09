@@ -14,7 +14,11 @@ import {
 } from "@/lib/mock-data";
 
 export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
-  const [selectedId, setSelectedId] = useState<string>(focusDriverId ?? drivers[0].id);
+  const resolveId = (id?: string) => {
+    if (!id) return drivers[0].id;
+    return drivers.some((d) => d.id === id) ? id : drivers[0].id;
+  };
+  const [selectedId, setSelectedId] = useState<string>(resolveId(focusDriverId));
   const [threads, setThreads] = useState<Record<string, Message[]>>(() => ({
     ...messagesByDriver,
   }));
@@ -26,7 +30,7 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
 
   useEffect(() => {
     if (focusDriverId) {
-      setSelectedId(focusDriverId);
+      setSelectedId(resolveId(focusDriverId));
       setMobileView("chat");
     }
   }, [focusDriverId]);
@@ -36,7 +40,7 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
     [filter],
   );
 
-  const selected = drivers.find((d) => d.id === selectedId)!;
+  const selected = drivers.find((d) => d.id === selectedId) ?? drivers[0];
   const messages = threads[selectedId] ?? [];
 
   useEffect(() => {
