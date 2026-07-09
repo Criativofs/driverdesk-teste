@@ -37,7 +37,7 @@ export function NotificationBell({ onOpenDriver }: { onOpenDriver?: (driverId: s
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-panel border border-hairline rounded-xl shadow-lg z-50 overflow-hidden">
+        <div className="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80 bg-panel border border-hairline rounded-xl shadow-lg z-50 overflow-hidden">
           <div className="px-4 py-3 border-b border-hairline flex items-center justify-between">
             <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Notificações
@@ -49,7 +49,7 @@ export function NotificationBell({ onOpenDriver }: { onOpenDriver?: (driverId: s
               Marcar como lidas
             </button>
           </div>
-          <div className="max-h-96 overflow-y-auto divide-y divide-hairline">
+          <div className="max-h-[70vh] sm:max-h-96 overflow-y-auto divide-y divide-hairline">
             {items.map((n) => (
               <button
                 key={n.id}
