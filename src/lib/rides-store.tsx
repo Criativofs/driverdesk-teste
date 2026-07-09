@@ -33,6 +33,7 @@ interface RidesStore {
   setRideStatus: (id: string, status: RideStatus) => void;
   setDriverStatus: (driverId: string, status: OpStatus) => void;
   addClient: (c: Omit<Client, "id" | "ridesTotal" | "lastRide" | "rating" | "favorites"> & Partial<Client>) => Client;
+  addDriver: (d: { name: string; phone: string; code?: string }) => void;
   updateCentralNumber: (centralNumber: string) => void;
   getClient: (id: string) => Client | undefined;
   getDriverName: (id?: string) => string;
