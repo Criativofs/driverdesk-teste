@@ -416,6 +416,7 @@ export function RidesProvider({ children }: { children: ReactNode }) {
       setRideStatus,
       setDriverStatus,
       addClient,
+      addDriver,
       updateCentralNumber,
       getClient: (id) => clientsList.find((c) => c.id === id),
       getDriverName: (id) => (id ? driversList.find((d) => d.id === id)?.name ?? "—" : "—"),
