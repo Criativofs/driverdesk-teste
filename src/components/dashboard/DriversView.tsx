@@ -70,7 +70,10 @@ export function DriversView({ onOpenInbox }: { onOpenInbox?: (driverId: string) 
       <div className="bg-panel border border-hairline rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-hairline flex items-center justify-between">
           <h3 className="text-sm font-bold">Motoristas cadastrados ({drivers.length})</h3>
-          <button className="text-[11px] font-bold uppercase tracking-widest text-ember hover:text-ember/80">
+          <button
+            onClick={() => setAddOpen(true)}
+            className="text-[11px] font-bold uppercase tracking-widest text-ember hover:text-ember/80"
+          >
             + Adicionar motorista
           </button>
         </div>
