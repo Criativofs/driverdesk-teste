@@ -49,12 +49,11 @@ export const Route = createFileRoute("/api/public/webhooks/whatsapp")({
               for (const msg of messages) {
                 const fromPhone = String(msg.from ?? "");
                 const waId = String(msg.id ?? "");
-                const kind = msg.type === "image"
-                  ? "image"
-                  : msg.type === "audio"
-                    ? "audio"
-                    : msg.type === "document"
-                      ? "document"
+                const kind: "text" | "image" | "audio" =
+                  msg.type === "image"
+                    ? "image"
+                    : msg.type === "audio"
+                      ? "audio"
                       : "text";
                 const body =
                   msg.text?.body ??
@@ -90,10 +89,12 @@ export const Route = createFileRoute("/api/public/webhooks/whatsapp")({
 
               // Atualizações de status de entrega
               const statuses = value.statuses ?? [];
+              const allowed = ["queued", "sent", "delivered", "read", "failed"] as const;
+              type WaStatus = (typeof allowed)[number];
               for (const st of statuses) {
                 const waId = String(st.id ?? "");
-                const status = String(st.status ?? "");
-                if (!waId || !status) continue;
+                const status = String(st.status ?? "") as WaStatus;
+                if (!waId || !allowed.includes(status)) continue;
                 await supabaseAdmin
                   .from("messages")
                   .update({ status })
