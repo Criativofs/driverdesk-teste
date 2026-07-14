@@ -60,8 +60,9 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
     [filter, allDrivers],
   );
 
-  const selected = allDrivers.find((d) => d.id === selectedId) ?? allDrivers[0] ?? mockDrivers[0];
-  const messages = threads[selectedId] ?? [];
+  const selected: Driver | undefined =
+    allDrivers.find((d) => d.id === selectedId) ?? allDrivers[0] ?? mockDrivers[0];
+  const messages = selected ? threads[selected.id] ?? [] : [];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -87,8 +88,17 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
     setDraft("");
   }
 
+  if (!selected) {
+    return (
+      <div className="h-full flex items-center justify-center p-8 text-center text-sm text-muted-foreground">
+        Nenhum motorista disponível ainda. Cadastre um motorista para iniciar conversas.
+      </div>
+    );
+  }
+
   return (
     <div className="lg:grid lg:grid-cols-12 lg:gap-6 h-full min-h-0 flex flex-col">
+
       {/* Conversations list */}
       <div
         className={`lg:col-span-3 bg-panel border border-hairline rounded-xl flex-col overflow-hidden ${
