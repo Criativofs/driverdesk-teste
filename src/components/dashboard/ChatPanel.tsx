@@ -88,14 +88,16 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
     setDraft("");
   }
 
+  if (!selected) {
+    return (
+      <div className="h-full flex items-center justify-center p-8 text-center text-sm text-muted-foreground">
+        Nenhum motorista disponível ainda. Cadastre um motorista para iniciar conversas.
+      </div>
+    );
+  }
+
   return (
     <div className="lg:grid lg:grid-cols-12 lg:gap-6 h-full min-h-0 flex flex-col">
-      {!selected && (
-        <div className="col-span-12 p-8 text-center text-sm text-muted-foreground">
-          Nenhum motorista disponível ainda. Cadastre um motorista para iniciar conversas.
-        </div>
-      )}
-      {selected && (<>
 
       {/* Conversations list */}
       <div
