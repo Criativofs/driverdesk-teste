@@ -90,6 +90,13 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
 
   return (
     <div className="lg:grid lg:grid-cols-12 lg:gap-6 h-full min-h-0 flex flex-col">
+      {!selected && (
+        <div className="col-span-12 p-8 text-center text-sm text-muted-foreground">
+          Nenhum motorista disponível ainda. Cadastre um motorista para iniciar conversas.
+        </div>
+      )}
+      {selected && (<>
+
       {/* Conversations list */}
       <div
         className={`lg:col-span-3 bg-panel border border-hairline rounded-xl flex-col overflow-hidden ${
