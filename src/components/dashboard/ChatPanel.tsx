@@ -60,8 +60,9 @@ export function ChatPanel({ focusDriverId }: { focusDriverId?: string } = {}) {
     [filter, allDrivers],
   );
 
-  const selected = allDrivers.find((d) => d.id === selectedId) ?? allDrivers[0] ?? mockDrivers[0];
-  const messages = threads[selectedId] ?? [];
+  const selected: Driver | undefined =
+    allDrivers.find((d) => d.id === selectedId) ?? allDrivers[0] ?? mockDrivers[0];
+  const messages = selected ? threads[selected.id] ?? [] : [];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
